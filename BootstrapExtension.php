@@ -3,9 +3,9 @@
 $wgExtensionFunctions[] = "BootstrapSetup";
 $wgExtensionCredits['parserhook'][] = array(
 	'name' => 'Bootstrap',
-	'author' => 'Aaron Parecki',
+	'author' => 'Martin Reinhardt',
 	'description' => 'Adds <nowiki><span6></nowiki> tags to support Bootstrap layouts',
-	'url' => 'https://github.com/aaronpk/Bootstrap-Skin'
+	'url' => 'https://github.com/hypery2k/Bootstrap-Skin'
 );
 
 function BootstrapSetup() {

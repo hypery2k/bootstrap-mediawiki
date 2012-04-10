@@ -1,6 +1,13 @@
 body {
-	padding-top: 40px;
+	        
+	padding-top: 60px;        
+	padding-bottom: 40px;   
 }
+
+.sidebar-nav {        
+	padding: 9px 0;      
+}
+.modal.modalBig {top:5%;left:5%;width:1280px;margin:-20px 0 0 -20px;}
 
 body.page-Home .page-header {
   display: none;
@@ -72,10 +79,6 @@ body, p {
   font-size: 16px;
 }
 
-body, p, li {
-  line-height: 24px;
-}
-
 #search .mw-search-formheader, .searchresults .mw-search-createlink {
   display: none;
 }
@@ -144,13 +147,14 @@ footer p {
 **/
 
 .topbar div > ul .menu-dropdown, .nav .menu-dropdown, .topbar div > ul .dropdown-menu, .nav .dropdown-menu {
-  background-color: #720707;
+  background-color: #707070;
 }
 .topbar div > ul .menu-dropdown li a, .nav .menu-dropdown li a, .topbar div > ul .dropdown-menu li a, .nav .dropdown-menu li a {
   color: #feeded;
 }
 .topbar div > ul .menu-dropdown li a:hover, .nav .menu-dropdown li a:hover, .topbar div > ul .dropdown-menu li a:hover, .nav .dropdown-menu li a:hover {
-  background-color: #520707;
+  background-color: #C0C0C0;
+  color: #151515;
 }
 .topbar a, .topbar input:-moz-placeholder {
   color: #feeded;

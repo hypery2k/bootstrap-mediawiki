@@ -3,8 +3,8 @@
  * Bootstrap - A basic MediaWiki skin based on Twitter's excellent Bootstrap CSS framework
  *
  * @Version 1.0.0
- * @Author Aaron Parecki <aaron@parecki.com>
- * @Copyright Aaron Parecki 2011 - http://aaronparecki.com/
+ * @Author Martin Reinhardt <webmaster@martinreinhardt-online.de>
+ * @Copyright Martin Reinhardt 2012 - http://martinreinhardt-online.de/
  * @License: GPLv2 (http://www.gnu.org/copyleft/gpl.html)
  */
 
@@ -35,7 +35,7 @@ class SkinBootstrap extends SkinTemplate {
  * @package MediaWiki
  * @subpackage Skins
  */
-class BootstrapTemplate extends QuickTemplate {
+class BootstrapTemplate extends BaseTemplate {
 	/**
 	 * @var Cached skin object
 	 */
@@ -93,46 +93,11 @@ class BootstrapTemplate extends QuickTemplate {
     ?>
 </head>
 <body class="<?php echo Sanitizer::escapeClass('page-' . $this->data['title'])?>">
-
-    <div class="topbar">
-      <div class="topbar-inner">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
         <div class="container-fluid">
           <a class="brand" href="<?php echo $this->data['nav_urls']['mainpage']['href'] ?>"><?php echo $wgSitename ?></a>
-
-          <ul class="nav">
-            <?php
-              $titleBar = $this->getPageRawText('Bootstrap:TitleBar');
-              $nav = array();
-              foreach(explode("\n", $titleBar) as $line) {
-                if(trim($line) == '') continue;
-                
-                if(preg_match('/^\*\s*\[\[(.+)\]\]/', $line, $match)) {
-                  $nav[] = array('title'=>$match[1], 'link'=>$match[1]);
-                }elseif(preg_match('/\*\*\s*\[\[(.+)\]\]/', $line, $match)) {
-                  $nav[count($nav)-1]['sublinks'][] = $match[1];
-                }elseif(preg_match('/^\*\s*(.+)/', $line, $match)) {
-                  $nav[] = array('title'=>$match[1]);
-                }
-              }
-              
-              foreach($nav as $topItem) {
-                $pageTitle = Title::newFromText($topItem['title']);
-                if(array_key_exists('sublinks', $topItem)) {
-                  echo '<li class="dropdown" data-dropdown="dropdown">';
-                    echo '<a href="#" class="dropdown-toggle">' . $topItem['title'] . '</a>';
-                    echo '<ul class="dropdown-menu">';
-                    foreach($topItem['sublinks'] as $subLink) {
-                      $pageTitle = Title::newFromText($subLink);
-                      echo '<li><a href="' . $pageTitle->getLocalURL() . '">' . $subLink . '</a>';
-                    }
-                    echo '</ul>';
-                  echo '</li>';
-                } else {
-                  echo '<li' . ($this->data['title'] == $topItem['title'] ? ' class="active"' : '') . '><a href="' . $pageTitle->getLocalURL() . '">' . $topItem['title'] . '</a></li>';
-                }
-              }
-            ?>
-          </ul>
+          
           
 			<?php
 
@@ -141,7 +106,7 @@ class BootstrapTemplate extends QuickTemplate {
   			?>
 				<ul<?php $this->html('userlangattributes') ?> class="nav secondary-nav">
 					<li class="dropdown" data-dropdown="dropdown">
-						<a class="dropdown-toggle" href="#"><?php echo $wgUser->getName(); ?></a>
+						<a class="dropdown-toggle" href="#"><?php echo $wgUser->getName(); ?><b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<?php foreach($this->data['personal_urls'] as $item): ?>
 								<li <?php echo $item['attributes'] ?>><a href="<?php echo htmlspecialchars($item['href']) ?>"<?php echo $item['key'] ?><?php if(!empty($item['class'])): ?> class="<?php echo htmlspecialchars($item['class']) ?>"<?php endif; ?>><?php echo htmlspecialchars($item['text']) ?></a></li>
@@ -158,7 +123,9 @@ class BootstrapTemplate extends QuickTemplate {
 	      ?>
 	        <ul class="nav secondary-nav">
 	        	<li class="dropdown" data-dropdown="dropdown">
-	        		<a class="dropdown-toggle" href="#">Page</a>
+	        		<a class="dropdown-toggle" href="#">Page<b class="caret"></b></a>
+	        		
+	        		
 	        		<ul class="dropdown-menu">
 			            <?php $lastkey = end(array_keys($this->data['content_actions'])) ?>
 			            <?php foreach($this->data['content_actions'] as $key => $action) { ?>
@@ -174,8 +141,8 @@ class BootstrapTemplate extends QuickTemplate {
         <?php
         }
       } else {  // else if is logged in
-        ?>
-          <ul class="secondary-nav">
+        ?> ABC
+          <ul class="nav secondary-nav">
             <li>
               <?php echo Linker::linkKnown(
                 SpecialPage::getTitleFor( 'Userlogin' ),
@@ -186,8 +153,8 @@ class BootstrapTemplate extends QuickTemplate {
         <?php
       }
       ?>
-          <form class="pull-right" action="<?php $this->text( 'wgScript' ) ?>" id="search-form">
-          	<input type="text" placeholder="Search" name="search" onchange="$('#search-form').submit()" />
+          <form class="navbar-search pull-right" action="<?php $this->text( 'wgScript' ) ?>" id="search-form">
+          	<input type="text" class="search-query" placeholder="Search" name="search" onchange="$('#search-form').submit()" />
           </form>
           
         </div>
@@ -195,47 +162,97 @@ class BootstrapTemplate extends QuickTemplate {
     </div><!-- topbar -->
 
   
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span3">
+			<div class="well sidebar-nav">
+       	 	  	<ul class="nav nav-list">
+ 
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(<?php $this->text( 'logopath' ) ?>);" href="<?php echo htmlspecialchars( $this->data['nav_urls']['mainpage']['href'] ) ?>" <?php echo Xml::expandAttributes( Linker::tooltipAndAccesskeyAttribs( 'p-logo' ) ) ?>></a></div>
+				<!-- /logo -->
+				<?php $this->renderLeftNavigation( $this->data['sidebar'] ); ?>
+          		</ul>
+       		</div>  
+  		</div>
+  		<div class="span9">
+      		<?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
+	
+        		<div class="page-header">
+          			<h1><?php $this->html( 'title' ) ?> <small><?php $this->html('subtitle') ?></small></h1>
+        		</div>	
+		
+			<?php $this->html( 'bodytext' ) ?>
+		</div>
+  </div><!-- container -->
 
-    <div class="container">
-
-      <?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
-
-        <div class="page-header">
-          <h1><?php $this->html( 'title' ) ?> <small><?php $this->html('subtitle') ?></small></h1>
-        </div>	
-
-        <!-- Main hero unit for a primary marketing message or call to action -->
-<!--
-        <div class="hero-unit">
-          <h1>Hello, world!</h1>
-          <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-          <p><a class="btn primary large">Learn more &raquo;</a></p>
-        </div>
--->
-
-		<?php $this->html( 'bodytext' ) ?>
-
-    </div><!-- container -->
 
 
-
-    <div class="bottom">
-      <div class="container">
-        <?php
-        $this->includePage('Bootstrap:Footer');
-        ?>
-      
-        <footer>
-          <p>&copy; <?php echo date('Y'); ?> by <a href="<?php echo (isset($wgCopyrightLink) ? $wgCopyrightLink : 'http://aaronparecki.com'); ?>"><?php echo (isset($wgCopyright) ? $wgCopyright : 'Aaron Parecki'); ?></a> 
-          	&bull; Powered by <a href="http://mediawiki.org">MediaWiki</a> 
-          	&bull; <a href="http://aaronparecki.com/MediaWiki_Bootstrap_Skin">Bootstrap Skin</a> by <a href="http://aaronparecki.com">Aaron Parecki</a>
+    <div class="footer">   
+          <p>&copy; <?php echo date('Y'); ?> by <a href="<?php echo (isset($wgCopyrightLink) ? $wgCopyrightLink : 'http://martinreinhardt-online.de'); ?>"><?php echo (isset($wgCopyright) ? $wgCopyright : 'Martin Reinhardt'); ?></a> 
+          	&bull; <a href="https://github.com/hypery2k/bootstrap-mediawiki">Bootstrap MediaWiki</a> 
           </p>
-        </footer>
-      </div><!-- container -->
-    </div><!-- bottom -->
-
+    </div><!-- footer -->
+ </div>
+</div>
 </body>
 </html>
+<?php
+	}
+
+private function  renderLeftNavigation ($portals){
+	// Render portals
+		foreach ( $portals as $name => $content ) {
+			if ( $content === false )
+				continue;
+
+			echo "\n<!-- {$name} -->\n";
+			switch( $name ) {
+				case 'SEARCH':
+					break;
+				case 'TOOLBOX':
+					$this->renderPortal( 'tb', $this->getToolbox(), 'toolbox', 'SkinTemplateToolboxEnd' );
+					break;
+				case 'LANGUAGES':
+					if ( $this->data['language_urls'] ) {
+						$this->renderPortal( 'lang', $this->data['language_urls'], 'otherlanguages' );
+					}
+					break;
+				default:
+					$this->renderPortal( $name, $content );
+				break;
+			}
+			echo "\n<!-- /{$name} -->\n";
+		}
+}
+
+private function renderPortal( $name, $content, $msg = null, $hook = null ) {
+		if ( !isset( $msg ) ) {
+			$msg = $name;
+		}
+		?>
+<li class="nav-header" id='<?php echo Sanitizer::escapeId( "p-$name" ) ?>'<?php echo Linker::tooltip( 'p-' . $name ) ?>>
+	<span<?php $this->html( 'userlangattributes' ) ?>><?php $msgObj = wfMessage( $msg ); echo htmlspecialchars( $msgObj->exists() ? $msgObj->text() : $msg ); ?></span>
+</li>
+<?php
+		if ( is_array( $content ) ): ?>		
+<?php
+			foreach( $content as $key => $val ): ?>
+			<li>
+			<?php echo $this->makeLink( $key, $val ); ?>
+			</li>
+<?php
+			endforeach;
+			if ( isset( $hook ) ) {
+				wfRunHooks( $hook, array( &$this, true ) );
+			}
+			?>
+<?php
+		else: ?>
+		<?php echo $content; /* Allow raw HTML block to be defined by extensions */ ?>
+<?php
+		endif; ?>
+
 <?php
 	}
 	
