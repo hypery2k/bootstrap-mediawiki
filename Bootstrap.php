@@ -141,7 +141,6 @@ class BootstrapTemplate extends BaseTemplate {
         <?php
         }
       } else {  // else if is logged in
-        ?> ABC
           <ul class="nav secondary-nav">
             <li>
               <?php echo Linker::linkKnown(
